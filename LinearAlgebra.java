@@ -3,102 +3,119 @@
 * @author Yan Chen
 * @version 1.0
 */
+import java.util.Arrays;
+
 public class LinearAlgebra {
-    /**
-    * a static method that operates matrix vector multiplication
-    * @throws IllegalOperandException throw IllegalOperandException if
-    * length of input vector is not the same as the width of input matrix.
-    * @param m a matrix
-    * @param v a vector
-    * @return result of matrix vector multiplication
-    */
-    public static Vector matrixVectorMultiply(Matrix m, Vector v) throws
-     IllegalOperandException {
-        if (m.getWidth() != v.getLength()) {
-            throw new IllegalOperandException("Sorry, something went wrong."
-                + "\nCannot multiply a matrix of width " + m.getWidth()
-                + " with a vector of length " + v.getLength() + ". \nLength"
-                + " of vector should be same as the width of the matrix.");
-        }
-        double[] n = new double[m.getHeight()];
-        for (int i = 0; i < m.getHeight(); i++) {
-            n[i] = 0;
-            for (int j = 0; j < v.getLength(); j++) {
-                n[i] += m.get(i, j) * v.get(j);
+
+
+    public static float[][] matrixMultiplication(float[][] m1, float[][] m2)
+        throws IllegalOperandException {
+            if (m1[0].length != m2.length) {
+                throw new IllegalOperandException("Sorry, something went wrong."
+                + "\nCannot multiply two matrices with different dimensions.");
             }
-        }
-        return new Vector(n);
-    }
-    /**
-    * a static method that operates matrix addition
-    * @throws IllegalOperandException throw IllegalOperandException if
-    * size of the tow input matrix are not the same.
-    * @param m1 a matrix
-    * @param m2 an other matrix
-    * @return result of matrix addition
-    */
-    public static Matrix matrixAdd(Matrix m1, Matrix m2) throws
-    IllegalOperandException {
-        if (m1.getWidth() != m2.getWidth()
-            || m1.getHeight() != m2.getHeight()) {
-            throw new IllegalOperandException("Sorry, something went wrong.\n"
-                + "Cannot add a matrix of width " + m1.getWidth() + " heigth "
-                + m1.getHeight() + " with a matrix of width " + m2.getWidth()
-                + " heigth " + m2.getHeight() + ". \n"
-                + "The size of two matrix have to be same.");
-        }
-        double[][] n = new double[m1.getHeight()][m1.getWidth()];
-        for (int i = 0; i < m1.getHeight(); i++) {
-            for (int j = 0; j < m1.getWidth(); j++) {
-                n[i][j] = m1.get(i, j) + m2.get(i, j);
+            float[][] n = new float[m1.length][m2[0].length];
+            for (int i = 0; i < m1.length; i++) {
+                for (int j = 0; j < m2[0].length; j++) {
+                    n[i][j] = 0;
+                    for (int k = 0; k < m1[0].length; k++) {
+                        n[i][j] += m1[i][k] * m2[k][j];
+                    }
+                }
             }
-        }
-        return new Matrix(n);
+        return n;
     }
-    /**
-    * a static method that operates vector dot production
-    * @throws IllegalOperandException throw IllegalOperandException if
-    * length of the two input vector are not the same.
-    * @param v1 a vector
-    * @param v2 an other vector
-    * @return result of vector dot production
-    */
-    public static double dotProduct(Vector v1, Vector v2) throws
+
+
+    public static void main(String[] args) {
+        float[][] m1 = {{1,2,3}, {1,2,3}, {1,2,3}, {1,2,3}};
+        float[][] m2 = {{1,2,3,4}, {1,2,3,4}, {1,2,3,4}};
+
+        float[] v1 = {1,2,3};
+        float[] v2 = {1,2,3};
+        float[] v3 = {5,6,7};
+
+
+        try {
+            for (int i = 0; i < m1.length; i++) {
+                System.out.println();
+                for (int j = 0; j < m1.length; j++) {
+                    System.out.print(matrixMultiplication(m1, m2)[i][j] + " ");
+                }
+            }
+            System.out.println();
+            System.out.println(Arrays.toString(vectorAdd(v1, v2)));
+            System.out.println(Arrays.toString(vectorSub(v3, v2)));
+            System.out.println(Arrays.toString(matrixVectorMultiply(m1, v2)));
+
+            for (int i = 0; i < m1.length; i++) {
+                System.out.println();
+                for (int j = 0; j < m1[0].length; j++) {
+                    System.out.print(matrixScalar(m1, 3)[i][j] + " ");
+                }
+            }
+
+        } catch (IllegalOperandException e) {
+            System.out.println("haha");
+        }
+        
+    }
+    
+    public static float[] vectorAdd(float[] v1, float[] v2) throws
     IllegalOperandException {
-        if (v1.getLength() != v2.getLength()) {
+        if (v1.length != v2.length) {
             throw new IllegalOperandException("Sorry, something went wrong.\n"
-                + "Cannot operate dot product of a vector of length "
-                + v1.getLength() + " with a vector of length " + v2.getLength()
+                + "Cannot operate vector addtion of a vector of length "
+                + v1.length + " with a vector of length " + v2.length
                 + ". \n"
                 + "The length of two vectors have to be same.");
         }
-        double n = 0;
-        for (int i = 0; i < v1.getLength(); i++) {
-            n += v1.get(i) * v2.get(i);
+        float[] n = new float[v1.length];
+        for (int i = 0; i < v1.length; i++) {
+            n[i] = v1[i] + v2[i];
         }
         return n;
     }
-    /**
-    * a static method that operates vector addition
-    * @throws IllegalOperandException throw IllegalOperandException if
-    * length of the two input vector are not the same.
-    * @param v1 a vector
-    * @param v2 an other vector
-    * @return result of vector addition
-    */
-    public static Vector vectorAdd(Vector v1, Vector v2) throws
+
+    public static float[] vectorSub(float[] v1, float[] v2) throws
     IllegalOperandException {
-        if (v1.getLength() != v2.getLength()) {
+        if (v1.length != v2.length) {
             throw new IllegalOperandException("Sorry, something went wrong.\n"
                 + "Cannot operate vector addtion of a vector of length "
-                + v1.getLength() + " with a vector of length " + v2.getLength()
+                + v1.length + " with a vector of length " + v2.length
                 + ". \n"
                 + "The length of two vectors have to be same.");
         }
-        float[] n = new float[v1.getLength()];
-        for (int i = 0; i < v1.getLength(); i++) {
-            n[i] = v1.get(i) + v2.get(i);
+        float[] n = new float[v1.length];
+        for (int i = 0; i < v1.length; i++) {
+            n[i] = v1[i] - v2[i];
         }
-        return new Vector(n);
+        return n;
+    }
+    public static float[] matrixVectorMultiply(float[][] m, float[] v) throws
+     IllegalOperandException {
+        if (m[0].length != v.length) {
+            throw new IllegalOperandException("Sorry, something went wrong."
+                + "\nCannot multiply a matrix of width " + m[0].length
+                + " with a vector of length " + v.length + ". \nLength"
+                + " of vector should be same as the width of the matrix.");
+        }
+        float[] n = new float[m.length];
+        for (int i = 0; i < m.length; i++) {
+            n[i] = 0;
+            for (int j = 0; j < v.length; j++) {
+                n[i] += m[i][j] * v[j];
+            }
+        }
+        return n;
+    }
+    public static float[][] matrixScalar(float[][] m, float s) {
+        float[][] n = new float[m.length][m[0].length];
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[0].length; j++) {
+                n[i][j] = s * m[i][j];
+            }
+        }
+        return n;
     }
 }
