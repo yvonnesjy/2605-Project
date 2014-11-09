@@ -27,39 +27,39 @@ public class LinearAlgebra {
     }
 
 
-    public static void main(String[] args) {
-        float[][] m1 = {{1,2,3}, {1,2,3}, {1,2,3}, {1,2,3}};
-        float[][] m2 = {{1,2,3,4}, {1,2,3,4}, {1,2,3,4}};
+    // public static void main(String[] args) {
+    //     float[][] m1 = {{1,2,3}, {1,2,3}, {1,2,3}, {1,2,3}};
+    //     float[][] m2 = {{1,2,3,4}, {1,2,3,4}, {1,2,3,4}};
 
-        float[] v1 = {1,2,3};
-        float[] v2 = {1,2,3};
-        float[] v3 = {5,6,7};
+    //     float[] v1 = {1,2,3};
+    //     float[] v2 = {1,2,3};
+    //     float[] v3 = {5,6,7};
 
 
-        try {
-            for (int i = 0; i < m1.length; i++) {
-                System.out.println();
-                for (int j = 0; j < m1.length; j++) {
-                    System.out.print(matrixMultiplication(m1, m2)[i][j] + " ");
-                }
-            }
-            System.out.println();
-            System.out.println(Arrays.toString(vectorAdd(v1, v2)));
-            System.out.println(Arrays.toString(vectorSub(v3, v2)));
-            System.out.println(Arrays.toString(matrixVectorMultiply(m1, v2)));
+    //     try {
+    //         for (int i = 0; i < m1.length; i++) {
+    //             System.out.println();
+    //             for (int j = 0; j < m1.length; j++) {
+    //                 System.out.print(matrixMultiplication(m1, m2)[i][j] + " ");
+    //             }
+    //         }
+    //         System.out.println();
+    //         System.out.println(Arrays.toString(vectorAdd(v1, v2)));
+    //         System.out.println(Arrays.toString(vectorSub(v3, v2)));
+    //         System.out.println(Arrays.toString(matrixVectorMultiply(m1, v2)));
 
-            for (int i = 0; i < m1.length; i++) {
-                System.out.println();
-                for (int j = 0; j < m1[0].length; j++) {
-                    System.out.print(matrixScalar(m1, 3)[i][j] + " ");
-                }
-            }
+    //         for (int i = 0; i < m1.length; i++) {
+    //             System.out.println();
+    //             for (int j = 0; j < m1[0].length; j++) {
+    //                 System.out.print(matrixScalar(m1, 3)[i][j] + " ");
+    //             }
+    //         }
 
-        } catch (IllegalOperandException e) {
-            System.out.println("haha");
-        }
+    //     } catch (IllegalOperandException e) {
+    //         System.out.println("haha");
+    //     }
         
-    }
+    // }
     
     public static float[] vectorAdd(float[] v1, float[] v2) throws
     IllegalOperandException {
