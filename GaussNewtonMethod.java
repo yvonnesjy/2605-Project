@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileNotFoundException;
 
 public class GaussNewtonMethod {
     private float[] x;
@@ -17,26 +18,33 @@ public class GaussNewtonMethod {
         y = new float[numOfPoints];
         b = beta;
         this.n = n;
-
-        Scanner scan = new Scanner(new BufferedReader(new FileReader(path)));
-        Scanner scan2;
-        for (int i = 0; i < numOfPoints; i++) {
-            scan2 = new Scanner(scan.nextLine());
-            x[i] = scan2.nextFloat();
-            y[i] = scan2.nextFloat();
-            scan2.close();
+        try {
+            Scanner scan = new Scanner(new BufferedReader(new FileReader(path)));
+            Scanner scan2;
+            for (int i = 0; i < numOfPoints; i++) {
+                scan2 = new Scanner(scan.nextLine());
+                x[i] = scan2.nextFloat();
+                y[i] = scan2.nextFloat();
+                scan2.close();
+            }
+            scan.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
         }
-        scan.close();
     }
 
     private int linesCounter(String path) {
         int count = 0;
-        Scanner scan = new Scanner(new BufferedReader(new FileReader(path)));
-        while (scan.hasNextLine()) {
-            scan.nextLine();
-            count++;
+        try {
+            Scanner scan = new Scanner(new BufferedReader(new FileReader(path)));
+            while (scan.hasNextLine()) {
+                scan.nextLine();
+                count++;
+            }
+            scan.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
         }
-        scan.close();
         return count;
     }
 
@@ -52,7 +60,7 @@ public class GaussNewtonMethod {
                 j[k][1] = - x[i];
                 j[k][2] = -1;
             }
-            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r, 1));
+            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
         }
         return beta;
     }
@@ -68,7 +76,7 @@ public class GaussNewtonMethod {
                 j[k][1] = - beta[0] * x[k] * (float) Math.pow(Math.E, beta[1] * x[k]);
                 j[k][2] = -1;
             }
-            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r, 1));
+            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
         }
         return beta;
     }
@@ -84,7 +92,7 @@ public class GaussNewtonMethod {
                 j[k][1] = - beta[0] / (x[k] + beta[1]) / (float) Math.log(10);
                 j[k][2] = -1;
             }
-            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r, 1));
+            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
         }
         return beta;
     }
@@ -100,9 +108,93 @@ public class GaussNewtonMethod {
                 j[k][1] = beta[0] * x[k] / (float) Math.pow(x[k] + beta[1], 2);
                 j[k][2] = -1;
             }
-            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r, 1));
+            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
         }
         return beta;
+    }
+
+    private float two_determinant(float[][] input){
+        return ((input[1][1]*input[0][0])-(input[0][1]*input[1][0]));
+    }
+
+    private float three_determinant(float[][] input){
+        float value1 = ((input[0][0]*input[1][1]*input[2][2])+(input[0][1]*input[1][2]*input[2][0])+(input[0][2]*input[1][0]*input[2][1]));
+        float value2 = ((-(input[0][2]*input[1][1]*input[2][0]))+(-(input[0][0]*input[1][2]*input[2][1]))+(-(input[0][1]*input[1][0]*input[2][2])));
+        return value1+value2;
+    }
+
+    private float[] matrixVectorMultiply(float[][] m, float[] v) {
+        float[] n = new float[m.length];
+        for (int i = 0; i < m.length; i++) {
+            n[i] = 0;
+            for (int j = 0; j < v.length; j++) {
+                n[i] += m[i][j] * v[j];
+            }
+        }
+        return n;
+    }
+
+    private float[][] matrixMultiplication(float[][] m1, float[][] m2) {
+            float[][] n = new float[m1.length][m2[0].length];
+            for (int i = 0; i < m1.length; i++) {
+                for (int j = 0; j < m2[0].length; j++) {
+                    n[i][j] = 0;
+                    for (int k = 0; k < m1[0].length; k++) {
+                        n[i][j] += m1[i][k] * m2[k][j];
+                    }
+                }
+            }
+        return n;
+    }
+
+    public static float[] vectorSubtract(float[] v1, float[] v2) {
+        float[] n = new float[v1.length];
+        for (int i = 0; i < v1.length; i++) {
+            n[i] = v1[i] - v2[i];
+        }
+        return n;
+    }
+
+    public float[][] three_transpose(float[][] input) {
+        float[][] output = new float[3][3];
+        output[0][0] = input[0][0];
+        output[0][1] = input[1][0];
+        output[0][2] = input[2][0];
+        output[1][0] = input[0][1];
+        output[1][1] = input[1][1];
+        output[1][2] = input[2][1];
+        output[2][0] = input[0][2];
+        output[2][1] = input[1][2];
+        output[2][2] = input[2][2];
+        return output;
+    }
+
+    private float[][] inverse(float[][] input){
+        float[][] newInverse = new float[3][3];
+        float invserDeter = 1/(Math.abs(three_determinant(input)));
+
+        float[][] topLeft = {{input[1][1],input[1][2]},{input[2][1],input[2][2]}};
+        float[][] middleLeft = {{input[1][2],input[1][0]},{input[2][2],input[2][0]}};
+        float[][] bottomLeft = {{input[1][0],input[1][1]},{input[2][0],input[2][1]}};
+
+        float[][] topMid = {{input[0][2],input[0][1]},{input[2][2],input[2][1]}};
+        float[][] middleMid = {{input[0][0],input[0][2]},{input[2][0],input[2][2]}};
+        float[][] bottomMid = {{input[0][1],input[0][0]},{input[2][1],input[2][0]}};
+
+        float[][] topRight = {{input[0][1],input[0][2]},{input[1][1],input[1][2]}};
+        float[][] middleRight = {{input[0][2],input[0][0]},{input[1][2],input[1][0]}};
+        float[][] bottomRight = {{input[0][0],input[0][1]},{input[1][0],input[1][1]}};
+
+        newInverse[0][0] = invserDeter*two_determinant(topLeft);
+        newInverse[0][1] = invserDeter*two_determinant(topMid);
+        newInverse[0][2] = invserDeter*two_determinant(topRight);
+        newInverse[1][0] = invserDeter*two_determinant(middleLeft);
+        newInverse[1][1] = invserDeter*two_determinant(middleMid);
+        newInverse[1][2] = invserDeter*two_determinant(middleRight);
+        newInverse[2][0] = invserDeter*two_determinant(bottomLeft);
+        newInverse[2][1] = invserDeter*two_determinant(bottomMid);
+        newInverse[2][2] = invserDeter*two_determinant(bottomRight);
+        return newInverse;
     }
 
     private float length(float[] vec) {
@@ -122,16 +214,47 @@ public class GaussNewtonMethod {
     }
 
     private float[][] qr_fact_househ(float[][] j) {
-        for (int i = 0; i < 3; i++) {
+        float[][] r = j;
+        float[][] q = new float[j.length][j.length];
+        for (int i = 0; i < j.length; i++) {
+            for (int k = 0; k < j.length; k++) {
+                if (i == k) {
+                    q[i][k] = 1;
+                } else {
+                    q[i][k] = 0;
+                }
+            }
+        }
+        for (int i = 0; i < 2; i++) {
             float[] a = new float[j.length - i];
-            for (int k = i; k < 3; k++) {
-                a[k - i] = j[i][k];
+            for (int k = i; k < j.length; k++) {
+                a[k - i] = j[k][i];
             }
             if (a[0] < 0) {
                 a[0] += length(a);
             }
             a = scalarMatrixMultiply(a, 1 / length(a));
-            float[][] h = matrixSubtract()
+            float[][] h = new float[j.length][j.length];
+            for (int s = 0; s < j.length; s++) {
+                for (int k = 0; k < j.length; k++) {
+                    if (s < j.length - a.length || k < j.length - a.length) {
+                        if (s == k) {
+                            h[s][i] = 1;
+                        } else {
+                            h[s][k] = 0;
+                        }
+                    } else {
+                        if (s == k) {
+                            h[s][s] = 1 - 2 * a[s] * a[s];
+                        } else {
+                            h[s][k] = - 2 * a[s] * a[k];
+                        }
+                    }
+                }
+            }
+            r = matrixMultiplication(h, r);
+            q = matrixMultiplication(q, h);
         }
+        return matrixMultiplication(inverse(r), three_transpose(q));
     }
 }
