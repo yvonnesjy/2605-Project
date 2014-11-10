@@ -12,6 +12,15 @@ public class GaussNewtonMethod {
     private float[][] j;
     private int numOfPoints;
 
+    public static void main(String[] args) {
+        float[] beta = {1, 3, -1};
+        GaussNewtonMethod gn = new GaussNewtonMethod("test.txt", beta, 5);
+        float[] result = gn.gn_qua();
+        for (int i = 0; i < 3; i++) {
+            System.out.println(result[i]);
+        }
+    }
+
     public GaussNewtonMethod(String path, float[] beta, int n) {
         numOfPoints = linesCounter(path);
         x = new float[numOfPoints];
@@ -23,6 +32,7 @@ public class GaussNewtonMethod {
             Scanner scan2;
             for (int i = 0; i < numOfPoints; i++) {
                 scan2 = new Scanner(scan.nextLine());
+                scan2.useDelimiter(",");
                 x[i] = scan2.nextFloat();
                 y[i] = scan2.nextFloat();
                 scan2.close();
@@ -57,9 +67,10 @@ public class GaussNewtonMethod {
                 r[k] = y[k] - beta[0] * (float) Math.pow(x[k], 2)
                     - beta[1] * x[k] - beta[2];
                 j[k][0] = - (float) Math.pow(x[k], 2);
-                j[k][1] = - x[i];
+                j[k][1] = - x[k];
                 j[k][2] = -1;
             }
+            System.out.println("iteration "+ i);
             beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
         }
         return beta;
@@ -155,17 +166,13 @@ public class GaussNewtonMethod {
         return n;
     }
 
-    public float[][] three_transpose(float[][] input) {
-        float[][] output = new float[3][3];
-        output[0][0] = input[0][0];
-        output[0][1] = input[1][0];
-        output[0][2] = input[2][0];
-        output[1][0] = input[0][1];
-        output[1][1] = input[1][1];
-        output[1][2] = input[2][1];
-        output[2][0] = input[0][2];
-        output[2][1] = input[1][2];
-        output[2][2] = input[2][2];
+    public float[][] transpose(float[][] input) {
+        float[][] output = new float[input[0].length][input.length];
+        for (int i = 0; i < input[0].length; i++) {
+            for (int j = 0; j < input.length; j++) {
+                output[i][j] = input[j][i];
+            }
+        }
         return output;
     }
 
@@ -225,29 +232,29 @@ public class GaussNewtonMethod {
                 }
             }
         }
-        for (int i = 0; i < 2; i++) {
-            float[] a = new float[j.length - i];
-            for (int k = i; k < j.length; k++) {
-                a[k - i] = j[k][i];
+        for (int i = 0; i <= 2; i++) {
+            float[] a = new float[r.length - i];
+            for (int k = i; k < r.length; k++) {
+                a[k - i] = r[k][i];
             }
             if (a[0] < 0) {
                 a[0] += length(a);
             }
             a = scalarMatrixMultiply(a, 1 / length(a));
-            float[][] h = new float[j.length][j.length];
-            for (int s = 0; s < j.length; s++) {
-                for (int k = 0; k < j.length; k++) {
-                    if (s < j.length - a.length || k < j.length - a.length) {
+            float[][] h = new float[r.length][r.length];
+            for (int s = 0; s < r.length; s++) {
+                for (int k = 0; k < r.length; k++) {
+                    if (s < r.length - a.length || k < r.length - a.length) {
                         if (s == k) {
-                            h[s][i] = 1;
+                            h[s][k] = 1;
                         } else {
                             h[s][k] = 0;
                         }
                     } else {
                         if (s == k) {
-                            h[s][s] = 1 - 2 * a[s] * a[s];
+                            h[s][k] = 1 - 2 * a[s - i] * a[k - i];
                         } else {
-                            h[s][k] = - 2 * a[s] * a[k];
+                            h[s][k] = - 2 * a[s - i] * a[k - i];
                         }
                     }
                 }
@@ -255,6 +262,12 @@ public class GaussNewtonMethod {
             r = matrixMultiplication(h, r);
             q = matrixMultiplication(q, h);
         }
-        return matrixMultiplication(inverse(r), three_transpose(q));
+        for (int a = 0; a < q.length; a++) {
+            for (int b = 0; b < q[0].length; b++) {
+                System.out.print(q[a][b] + " ");
+            }
+            System.out.println();
+        }
+        return matrixMultiplication(inverse(r), transpose(q));
     }
 }
