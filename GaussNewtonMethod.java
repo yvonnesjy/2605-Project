@@ -1,16 +1,16 @@
-import java.util.Scanner;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
 
 public class GaussNewtonMethod {
-    private float[] x;
-    private float[] y;
-    private float[] b;
-    private int n;
+    private final float[] x;
+    private final float[] y;
+    private final float[] b;
+    private final int n;
     private float[] r;
     private float[][] j;
-    private int numOfPoints;
+    private final int numOfPoints;
 
     public static void main(String[] args) {
         float[] beta = {(float)0.9, (float)0.2, (float)0.1};
@@ -38,7 +38,6 @@ public class GaussNewtonMethod {
                 scan2.close();
             }
             scan.close();
-            for (int i = 0; i < x)
         } catch (FileNotFoundException e) {
             System.out.println("File not found.");
         }
@@ -66,7 +65,7 @@ public class GaussNewtonMethod {
         for (int i = 1; i <= n; i++) {
             for (int k = 0; k < numOfPoints; k++) {
                 r[k] = y[k] - beta[0] * (float) Math.pow(x[k], 2)
-                    - beta[1] * x[k] - beta[2];
+                        - beta[1] * x[k] - beta[2];
                 j[k][0] = - (float) Math.pow(x[k], 2);
                 j[k][1] = - x[k];
                 j[k][2] = - 1;
@@ -147,15 +146,15 @@ public class GaussNewtonMethod {
     }
 
     private float[][] matrixMultiplication(float[][] m1, float[][] m2) {
-            float[][] n = new float[m1.length][m2[0].length];
-            for (int i = 0; i < m1.length; i++) {
-                for (int j = 0; j < m2[0].length; j++) {
-                    n[i][j] = 0;
-                    for (int k = 0; k < m1[0].length; k++) {
-                        n[i][j] += m1[i][k] * m2[k][j];
-                    }
+        float[][] n = new float[m1.length][m2[0].length];
+        for (int i = 0; i < m1.length; i++) {
+            for (int j = 0; j < m2[0].length; j++) {
+                n[i][j] = 0;
+                for (int k = 0; k < m1[0].length; k++) {
+                    n[i][j] += m1[i][k] * m2[k][j];
                 }
             }
+        }
         return n;
     }
 
@@ -276,5 +275,59 @@ public class GaussNewtonMethod {
             }
         }
         return matrixMultiplication(inverse(newR), transpose(newQ));
+    }
+
+    public float[][] givens(float[][] input) throws Exception {
+        int m = input.length;
+        int n = input[0].length;
+        if (n < m) {
+            throw new Exception();
+        }
+        float[][] oldA = input.clone();
+        float[][] newA = oldA;
+        float[][] oldGiven = new float[m][m];
+        float[][] newGiven = new float[m][m];
+        float[][] oldGtranspose = null;
+        float[][] newGtranspose = null;
+        float[][] oldQ=null;
+        float[][] newQ=null;
+        int colIncrease = 0;
+
+        for (int col = 0; col < (n - 1); col++) {
+            for (int row = col + 1; row < m; row++) {
+                newGiven = givenHelper(col, row + colIncrease, newA, m);
+                newA = matrixMultiplication(newGiven, oldA);
+                oldA = newA;
+                oldGiven = newGiven;
+                newGtranspose = transpose(newGiven);
+                if(oldGtranspose!=null){
+                    newQ = matrixMultiplication(oldGtranspose, newGtranspose);
+                    if(oldQ!=null){
+                        newQ = matrixMultiplication(oldQ,newGtranspose);
+                    }
+                    oldQ = newQ;
+                }
+                oldGtranspose = newGtranspose;
+            }
+        }
+        float[][] R = newA;
+        return matrixMultiplication(inverse(R),transpose(newQ));
+    }
+
+    public static float[][] givenHelper(int i, int j, float[][] input,
+            int givenSize) {
+        float[][] given = new float[givenSize][givenSize];
+        float c = (float) ((input[i][i]) / (Math
+                .sqrt((Math.pow(input[i][i], 2)) + (Math.pow(input[j][i], 2)))));
+        float s = (float) ((-input[j][i]) / (Math.sqrt((Math
+                .pow(input[i][i], 2)) + (Math.pow(input[j][i], 2)))));
+        for (int a = 0; a < given.length; a++) {
+            given[a][a] = 1;
+        }
+        given[i][j] = -s;
+        given[i][i] = c;
+        given[j][i] = s;
+        given[j][j] = c;
+        return given;
     }
 }
