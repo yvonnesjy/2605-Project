@@ -16,9 +16,6 @@ public class GaussNewtonMethod {
         float[] beta = {1, 3, -1};
         GaussNewtonMethod gn = new GaussNewtonMethod("test.txt", beta, 5);
         float[] result = gn.gn_qua();
-        for (int i = 0; i < 3; i++) {
-            System.out.println(result[i]);
-        }
     }
 
     public GaussNewtonMethod(String path, float[] beta, int n) {
@@ -70,8 +67,21 @@ public class GaussNewtonMethod {
                 j[k][1] = - x[k];
                 j[k][2] = -1;
             }
-            System.out.println("iteration "+ i);
+            float[][] haha = qr_fact_househ(j);
+            System.out.println("iteration " + i);
+            System.out.println("qr fact");
+            for (int a = 0; a < haha.length; a++) {
+                for (int b = 0; b < haha[0].length; b++) {
+                    System.out.print(haha[a][b] + " ");
+                }
+                System.out.println();
+            }
             beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
+            System.out.println("beta");
+            for (int a = 0; a < 3; a++) {
+                System.out.print(beta[a] + " ");
+            }
+            System.out.println();
         }
         return beta;
     }
@@ -170,7 +180,7 @@ public class GaussNewtonMethod {
         float[][] output = new float[input[0].length][input.length];
         for (int i = 0; i < input[0].length; i++) {
             for (int j = 0; j < input.length; j++) {
-                output[i][j] = input[j][i];
+                output[i][j] = - input[j][i];
             }
         }
         return output;
@@ -262,12 +272,18 @@ public class GaussNewtonMethod {
             r = matrixMultiplication(h, r);
             q = matrixMultiplication(q, h);
         }
-        for (int a = 0; a < q.length; a++) {
-            for (int b = 0; b < q[0].length; b++) {
-                System.out.print(q[a][b] + " ");
+        float[][] newR = new float[r[0].length][r[0].length];
+        for (int c = 0; c < newR.length; c++) {
+            for (int d = 0; d < newR.length; d++) {
+                newR[c][d] = r[c][d];
             }
-            System.out.println();
         }
-        return matrixMultiplication(inverse(r), transpose(q));
+        float[][] newQ = new float[q.length][newR.length];
+        for (int c = 0; c < newQ.length; c++) {
+            for (int d = 0; d < newQ[0].length; d++) {
+                newQ[c][d] = q[c][d];
+            }
+        }
+        return matrixMultiplication(inverse(newR), transpose(newQ));
     }
 }
