@@ -13,9 +13,12 @@ public class GaussNewtonMethod {
     private int numOfPoints;
 
     public static void main(String[] args) {
-        float[] beta = {1, 3, -1};
+        float[] beta = {(float)0.9, (float)0.2, (float)0.1};
         GaussNewtonMethod gn = new GaussNewtonMethod("test.txt", beta, 5);
-        float[] result = gn.gn_qua();
+        float[] result = gn.gn_log();
+        for (int i = 0; i < 3; i++) {
+            System.out.print(result[i] + " ");
+        }
     }
 
     public GaussNewtonMethod(String path, float[] beta, int n) {
@@ -35,6 +38,7 @@ public class GaussNewtonMethod {
                 scan2.close();
             }
             scan.close();
+            for (int i = 0; i < x)
         } catch (FileNotFoundException e) {
             System.out.println("File not found.");
         }
@@ -65,23 +69,10 @@ public class GaussNewtonMethod {
                     - beta[1] * x[k] - beta[2];
                 j[k][0] = - (float) Math.pow(x[k], 2);
                 j[k][1] = - x[k];
-                j[k][2] = -1;
+                j[k][2] = - 1;
             }
             float[][] haha = qr_fact_househ(j);
-            System.out.println("iteration " + i);
-            System.out.println("qr fact");
-            for (int a = 0; a < haha.length; a++) {
-                for (int b = 0; b < haha[0].length; b++) {
-                    System.out.print(haha[a][b] + " ");
-                }
-                System.out.println();
-            }
             beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
-            System.out.println("beta");
-            for (int a = 0; a < 3; a++) {
-                System.out.print(beta[a] + " ");
-            }
-            System.out.println();
         }
         return beta;
     }
@@ -95,7 +86,7 @@ public class GaussNewtonMethod {
                 r[k] = y[k] - beta[0] * (float) Math.pow(Math.E, beta[1] * x[k]) - beta[2];
                 j[k][0] = - (float) Math.pow(Math.E, beta[1] * x[k]);
                 j[k][1] = - beta[0] * x[k] * (float) Math.pow(Math.E, beta[1] * x[k]);
-                j[k][2] = -1;
+                j[k][2] = - 1;
             }
             beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
         }
@@ -111,7 +102,7 @@ public class GaussNewtonMethod {
                 r[k] = y[k] - beta[0] * (float) Math.log10(x[k] + beta[1]) - beta[2];
                 j[k][0] = - (float) Math.log(x[k] + beta[1]);
                 j[k][1] = - beta[0] / (x[k] + beta[1]) / (float) Math.log(10);
-                j[k][2] = -1;
+                j[k][2] = - 1;
             }
             beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
         }
@@ -127,7 +118,7 @@ public class GaussNewtonMethod {
                 r[k] = y[k] - beta[0] * x[k] / (x[k] + beta[1]) - beta[2];
                 j[k][0] = - x[k] / (x[k] + beta[1]);
                 j[k][1] = beta[0] * x[k] / (float) Math.pow(x[k] + beta[1], 2);
-                j[k][2] = -1;
+                j[k][2] = - 1;
             }
             beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
         }
@@ -180,7 +171,7 @@ public class GaussNewtonMethod {
         float[][] output = new float[input[0].length][input.length];
         for (int i = 0; i < input[0].length; i++) {
             for (int j = 0; j < input.length; j++) {
-                output[i][j] = - input[j][i];
+                output[i][j] = input[j][i];
             }
         }
         return output;
@@ -202,15 +193,15 @@ public class GaussNewtonMethod {
         float[][] middleRight = {{input[0][2],input[0][0]},{input[1][2],input[1][0]}};
         float[][] bottomRight = {{input[0][0],input[0][1]},{input[1][0],input[1][1]}};
 
-        newInverse[0][0] = invserDeter*two_determinant(topLeft);
-        newInverse[0][1] = invserDeter*two_determinant(topMid);
-        newInverse[0][2] = invserDeter*two_determinant(topRight);
-        newInverse[1][0] = invserDeter*two_determinant(middleLeft);
-        newInverse[1][1] = invserDeter*two_determinant(middleMid);
-        newInverse[1][2] = invserDeter*two_determinant(middleRight);
-        newInverse[2][0] = invserDeter*two_determinant(bottomLeft);
-        newInverse[2][1] = invserDeter*two_determinant(bottomMid);
-        newInverse[2][2] = invserDeter*two_determinant(bottomRight);
+        newInverse[0][0] = - invserDeter*two_determinant(topLeft);
+        newInverse[0][1] = - invserDeter*two_determinant(topMid);
+        newInverse[0][2] = - invserDeter*two_determinant(topRight);
+        newInverse[1][0] = - invserDeter*two_determinant(middleLeft);
+        newInverse[1][1] = - invserDeter*two_determinant(middleMid);
+        newInverse[1][2] = - invserDeter*two_determinant(middleRight);
+        newInverse[2][0] = - invserDeter*two_determinant(bottomLeft);
+        newInverse[2][1] = - invserDeter*two_determinant(bottomMid);
+        newInverse[2][2] = - invserDeter*two_determinant(bottomRight);
         return newInverse;
     }
 
