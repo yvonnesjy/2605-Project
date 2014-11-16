@@ -35,11 +35,12 @@ public class PowerMethod {
 		float lambdaAfter = dotProduct(y, xk) / dotProduct(y, xkMinus1);
 		int k = 2;
         boolean keepGoing = true;
-		while (keepGoing && (lambdaAfter - lambdaBefore) > E_VALUE) {
+        float b = lambdaAfter - lambdaBefore;
+		while (keepGoing && Math.abs(lambdaAfter - lambdaBefore) > E_VALUE) {
 			lambdaBefore = lambdaAfter;
+			xkMinus1 = xk;
 			xk = matrixVectorMultiply(a, xkMinus1);
 			lambdaAfter = dotProduct(y, xk) / dotProduct(y, xkMinus1);
-			xkMinus1 = xk;
 			k++;
 			if (k > n) {
                 keepGoing = false;
@@ -48,6 +49,7 @@ public class PowerMethod {
                 return;
 			}
 		}
+		xk = unitEigenvector(xk);
 		System.out.println("val " + lambdaAfter);
         System.out.println("vec");
         for (int i = 0; i < xk.length; i++) {
@@ -70,7 +72,7 @@ public class PowerMethod {
 	// 	return true;
 	// }
 
-	public static float norm(float[] x) {
+	public float norm(float[] x) {
 		float sum = 0;
 		for (int i = 0; i < x.length; i++) {
 			sum += x[i] * x[i];
@@ -79,7 +81,7 @@ public class PowerMethod {
 		return (float)Math.sqrt(eigenvalue);  
 	}
 
-	public static float[] unitEigenvector(float[] x) {
+	public float[] unitEigenvector(float[] x) {
 		float[] unitEigenvector = new float[x.length];
 		for (int i = 0; i < x.length; i++) {
 			unitEigenvector[i] = x[i] / norm(x);
@@ -88,7 +90,7 @@ public class PowerMethod {
 	}
 
 
-	public static float dotProduct(float[] v1, float[] v2) throws
+	public float dotProduct(float[] v1, float[] v2) throws
     	IllegalArgumentException {
         if (v1.length != v2.length) {
             throw new IllegalArgumentException("Sorry, something went wrong.\n"
@@ -104,7 +106,7 @@ public class PowerMethod {
         return a;
     }
 
-	public static float[] matrixVectorMultiply(float[][] m, float[] v) throws
+	public float[] matrixVectorMultiply(float[][] m, float[] v) throws
      	IllegalArgumentException {
         if (m[0].length != v.length) {
             throw new IllegalArgumentException("Sorry, something went wrong.\n"
