@@ -1,12 +1,9 @@
 import java.lang.Math;
 public class PowerMethod {
-	// private int n;
-	private static int k;
-	private float eigenvalue;
-	private float[] eigenvector;
-	private int size;
-	// private float t;
-	private float[] y;
+	float[][] a;
+    float[] x;
+    float[] y;
+    int n;
 	private static final double E_VALUE = 0.00005f;
 	//private static float lambda;
 
@@ -17,44 +14,48 @@ public class PowerMethod {
         float[] y = {(float)1, (float)0};
         int n = 50;
 
-        PowerMethod test1 = new PowerMethod();
-        System.out.println(test1.eigenPower(a,x,y));
+        PowerMethod test1 = new PowerMethod(a, x, y, n);
+        test1.eigenPower();
     }
     
 	public PowerMethod(float[][] a, float[] x, float[] y, int n) {
-		this.eigenvalue = eigenvalue;
-		this.eigenvector = eigenvector;
-		this.k = k;
+		this.a = a;
+        this.x = x;
+        this.y = y;
+        this.n = n;
 	}
 
-	public PowerMethod eigenPower(float[][] a, float[] x, float[] y, int n) {
+	public void eigenPower() {
 		float[] xkMinus1 = x;
 		float[] xk = matrixVectorMultiply(a, xkMinus1);
 		float lambdaBefore = dotProduct(y, xk) / dotProduct(y, xkMinus1);
+        System.out.println(lambdaBefore);
 		xkMinus1 = xk;
 		xk = matrixVectorMultiply(a, xkMinus1);
 		float lambdaAfter = dotProduct(y, xk) / dotProduct(y, xkMinus1);
-		int k = 0;
-		if ((lambdaAfter - lambdaBefore) <= E_VALUE) {
+		int k = 2;
+        boolean keepGoing = true;
+		while (keepGoing && (lambdaAfter - lambdaBefore) > E_VALUE) {
+			lambdaBefore = lambdaAfter;
+			xk = matrixVectorMultiply(a, xkMinus1);
+			lambdaAfter = dotProduct(y, xk) / dotProduct(y, xkMinus1);
+			xkMinus1 = xk;
 			k++;
-		} else {
-			while ((lambdaAfter - lambdaBefore) > E_VALUE) {
-				for (int i = 0; i < n; i++) {
-					lambdaBefore = lambdaAfter;
-					xk = matrixVectorMultiply(a, xkMinus1);
-					lambdaAfter = dotProduct(y, xk) / dotProduct(y, xkMinus1);
-					xkMinus1 = xk;
-					k++;
-					if (k == n) {
-						lambdaAfter = 0;
-						lambdaBefore = 0;
-						System.out.println("We did not get an answer within "
-							+ n + "interations.");
-					}
-				}
+			if (k > n) {
+                keepGoing = false;
+				System.out.println("We did not get an answer within "
+					+ n + "interations.");
+                return;
 			}
 		}
-		return new PowerMethod(Math.abs(lambdaAfter), unitEigenvector(xk), k);
+		System.out.println("val " + lambdaAfter);
+        System.out.println("vec");
+        for (int i = 0; i < xk.length; i++) {
+            System.out.print(xk[i] + " ");
+        }
+        System.out.println();
+        System.out.println("iter ");
+        System.out.println(k);
 	}
 
 	// public static boolean isDiagDominant(float[][] a) {
@@ -119,11 +120,5 @@ public class PowerMethod {
             }
         }
         return a;
-    }
-
-    public String toString () {
-    	return "The approximate largest eigenvalue is " + eigenvalue
-    			+ ".\nThe approximate eigenvector is " + eigenvector
-    		    + ". \n The efficient number of iteration is " + k;
     }
 }

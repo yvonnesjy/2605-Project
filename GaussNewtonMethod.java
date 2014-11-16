@@ -178,7 +178,7 @@ public class GaussNewtonMethod {
 
     private float[][] inverse(float[][] input){
         float[][] newInverse = new float[3][3];
-        float invserDeter = 1/(Math.abs(three_determinant(input)));
+        float invserDeter = 1/three_determinant(input);
 
         float[][] topLeft = {{input[1][1],input[1][2]},{input[2][1],input[2][2]}};
         float[][] middleLeft = {{input[1][2],input[1][0]},{input[2][2],input[2][0]}};
@@ -192,15 +192,15 @@ public class GaussNewtonMethod {
         float[][] middleRight = {{input[0][2],input[0][0]},{input[1][2],input[1][0]}};
         float[][] bottomRight = {{input[0][0],input[0][1]},{input[1][0],input[1][1]}};
 
-        newInverse[0][0] = - invserDeter*two_determinant(topLeft);
-        newInverse[0][1] = - invserDeter*two_determinant(topMid);
-        newInverse[0][2] = - invserDeter*two_determinant(topRight);
-        newInverse[1][0] = - invserDeter*two_determinant(middleLeft);
-        newInverse[1][1] = - invserDeter*two_determinant(middleMid);
-        newInverse[1][2] = - invserDeter*two_determinant(middleRight);
-        newInverse[2][0] = - invserDeter*two_determinant(bottomLeft);
-        newInverse[2][1] = - invserDeter*two_determinant(bottomMid);
-        newInverse[2][2] = - invserDeter*two_determinant(bottomRight);
+        newInverse[0][0] = invserDeter*two_determinant(topLeft);
+        newInverse[0][1] = -invserDeter*two_determinant(topMid);
+        newInverse[0][2] = invserDeter*two_determinant(topRight);
+        newInverse[1][0] = -invserDeter*two_determinant(middleLeft);
+        newInverse[1][1] = invserDeter*two_determinant(middleMid);
+        newInverse[1][2] = -invserDeter*two_determinant(middleRight);
+        newInverse[2][0] = invserDeter*two_determinant(bottomLeft);
+        newInverse[2][1] = -invserDeter*two_determinant(bottomMid);
+        newInverse[2][2] = invserDeter*two_determinant(bottomRight);
         return newInverse;
     }
 
