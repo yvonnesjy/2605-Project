@@ -60,17 +60,8 @@ public class PowerMethod {
         System.out.println(k);
 	}
 
-	// public static boolean isDiagDominant(float[][] a) {
-	// 	float 
-	// 	for (int i = 0; i < a.length; i++ ) {
-	// 		for (int j = 0; j < a[0].length; j++) {
-	// 			if (a[i][i] < a[i][j]) {
-	// 				return false;
-	// 			}
-	// 		}
-	// 	}
-	// 	return true;
-	// }
+	
+
 
 	public float norm(float[] x) {
 		float sum = 0;
