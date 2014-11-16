@@ -15,7 +15,7 @@ public class GaussNewtonMethod {
     public static void main(String[] args) {
         float[] beta = {(float)0.9, (float)0.2, (float)0.1};
         GaussNewtonMethod gn = new GaussNewtonMethod("test.txt", beta, 5);
-        float[] result = gn.gn_log();
+        float[] result = gn.gn_rat();
         for (int i = 0; i < 3; i++) {
             System.out.print(result[i] + " ");
         }
@@ -70,7 +70,6 @@ public class GaussNewtonMethod {
                 j[k][1] = - x[k];
                 j[k][2] = - 1;
             }
-            float[][] haha = qr_fact_househ(j);
             beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
         }
         return beta;
@@ -103,7 +102,7 @@ public class GaussNewtonMethod {
                 j[k][1] = - beta[0] / (x[k] + beta[1]) / (float) Math.log(10);
                 j[k][2] = - 1;
             }
-            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
+            beta = vectorSubtract(beta, matrixVectorMultiply(givens(j), r));
         }
         return beta;
     }
@@ -193,13 +192,13 @@ public class GaussNewtonMethod {
         float[][] bottomRight = {{input[0][0],input[0][1]},{input[1][0],input[1][1]}};
 
         newInverse[0][0] = invserDeter*two_determinant(topLeft);
-        newInverse[0][1] = -invserDeter*two_determinant(topMid);
+        newInverse[0][1] = invserDeter*two_determinant(topMid);
         newInverse[0][2] = invserDeter*two_determinant(topRight);
-        newInverse[1][0] = -invserDeter*two_determinant(middleLeft);
+        newInverse[1][0] = invserDeter*two_determinant(middleLeft);
         newInverse[1][1] = invserDeter*two_determinant(middleMid);
-        newInverse[1][2] = -invserDeter*two_determinant(middleRight);
+        newInverse[1][2] = invserDeter*two_determinant(middleRight);
         newInverse[2][0] = invserDeter*two_determinant(bottomLeft);
-        newInverse[2][1] = -invserDeter*two_determinant(bottomMid);
+        newInverse[2][1] = invserDeter*two_determinant(bottomMid);
         newInverse[2][2] = invserDeter*two_determinant(bottomRight);
         return newInverse;
     }
@@ -247,7 +246,7 @@ public class GaussNewtonMethod {
                 for (int k = 0; k < r.length; k++) {
                     if (s < r.length - a.length || k < r.length - a.length) {
                         if (s == k) {
-                            h[s][k] = 1;
+                            h[s][k] = -1;
                         } else {
                             h[s][k] = 0;
                         }
@@ -263,27 +262,37 @@ public class GaussNewtonMethod {
             r = matrixMultiplication(h, r);
             q = matrixMultiplication(q, h);
         }
+        System.out.println("r");
+            for (int d = 0; d < r.length; d++) {
+                for (int b = 0; b < r[0].length; b++) {
+                    System.out.print(-r[d][b] + " ");
+                }
+                System.out.println();
+            }System.out.println("q");
+            for (int d = 0; d < q.length; d++) {
+                for (int b = 0; b < q[0].length; b++) {
+                    System.out.print(-q[d][b] + " ");
+                }
+                System.out.println();
+            }
         float[][] newR = new float[r[0].length][r[0].length];
         for (int c = 0; c < newR.length; c++) {
             for (int d = 0; d < newR.length; d++) {
-                newR[c][d] = r[c][d];
+                newR[c][d] = -r[c][d];
             }
         }
         float[][] newQ = new float[q.length][newR.length];
         for (int c = 0; c < newQ.length; c++) {
             for (int d = 0; d < newQ[0].length; d++) {
-                newQ[c][d] = q[c][d];
+                newQ[c][d] = -q[c][d];
             }
         }
         return matrixMultiplication(inverse(newR), transpose(newQ));
     }
 
-    public float[][] givens(float[][] input) throws Exception {
+    public float[][] givens(float[][] input) {
         int m = input.length;
         int n = input[0].length;
-        if (n > m) {
-            throw new Exception();
-        }
         float[][] oldA = input.clone();
         float[][] newA = oldA;
         float[][] newGiven = new float[m][m];
@@ -327,6 +336,19 @@ public class GaussNewtonMethod {
                 }
             }
         }
+        System.out.println("q");
+            for (int d = 0; d < newQ.length; d++) {
+                for (int b = 0; b < newQ[0].length; b++) {
+                    System.out.print(newQ[d][b] + " ");
+                }
+                System.out.println();
+            }System.out.println("r");
+            for (int d = 0; d < newA.length; d++) {
+                for (int b = 0; b < newA[0].length; b++) {
+                    System.out.print(newA[d][b] + " ");
+                }
+                System.out.println();
+            }
         float[][] R = new float[n][n];
         float[][] Q = new float[m][n];
         for (int i = 0; i < m; i++) {
