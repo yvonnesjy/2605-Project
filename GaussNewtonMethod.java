@@ -204,6 +204,7 @@ public class GaussNewtonMethod {
         return newInverse;
     }
 
+
     private float length(float[] vec) {
         float square = 0;
         for (int i = 0; i < vec.length; i++) {
@@ -280,38 +281,65 @@ public class GaussNewtonMethod {
     public float[][] givens(float[][] input) throws Exception {
         int m = input.length;
         int n = input[0].length;
-        if (n < m) {
+        if (n > m) {
             throw new Exception();
         }
         float[][] oldA = input.clone();
         float[][] newA = oldA;
-        float[][] oldGiven = new float[m][m];
         float[][] newGiven = new float[m][m];
         float[][] oldGtranspose = null;
         float[][] newGtranspose = null;
-        float[][] oldQ=null;
-        float[][] newQ=null;
-        int colIncrease = 0;
+        float[][] oldQ = null;
+        float[][] newQ = null;
 
         for (int col = 0; col < (n - 1); col++) {
             for (int row = col + 1; row < m; row++) {
-                newGiven = givenHelper(col, row + colIncrease, newA, m);
+                newGiven = givenHelper(col, row, newA, m);
                 newA = matrixMultiplication(newGiven, oldA);
                 oldA = newA;
-                oldGiven = newGiven;
                 newGtranspose = transpose(newGiven);
-                if(oldGtranspose!=null){
+                if (oldGtranspose != null) {
                     newQ = matrixMultiplication(oldGtranspose, newGtranspose);
-                    if(oldQ!=null){
-                        newQ = matrixMultiplication(oldQ,newGtranspose);
+                    if (oldQ != null) {
+                        newQ = matrixMultiplication(oldQ, newGtranspose);
                     }
                     oldQ = newQ;
                 }
                 oldGtranspose = newGtranspose;
             }
         }
-        float[][] R = newA;
-        return matrixMultiplication(inverse(R),transpose(newQ));
+        if (m > n) {
+            for (int col = n - 1; col < n; col++) {
+                for (int row = col + 1; row < m; row++) {
+                    newGiven = givenHelper(col, row, newA, m);
+                    newA = matrixMultiplication(newGiven, oldA);
+                    oldA = newA;
+                    newGtranspose = transpose(newGiven);
+                    if (oldGtranspose != null) {
+                        newQ = matrixMultiplication(oldGtranspose,
+                                newGtranspose);
+                        if (oldQ != null) {
+                            newQ = matrixMultiplication(oldQ, newGtranspose);
+                        }
+                        oldQ = newQ;
+                    }
+                    oldGtranspose = newGtranspose;
+                }
+            }
+        }
+        float[][] R = new float[n][n];
+        float[][] Q = new float[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                Q[i][j] = newQ[i][j];
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                R[i][j] = newA[i][j];
+            }
+        }
+        return matrixMultiplication(inverse(R),transpose(Q));
     }
 
     public static float[][] givenHelper(int i, int j, float[][] input,
