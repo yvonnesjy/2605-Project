@@ -20,10 +20,8 @@ public class PowerMethod {
         PowerMethod test1 = new PowerMethod();
         System.out.println(test1.eigenPower(a,x,y));
     }
-    public PowerMethod() {
-    	
-    }
-	public PowerMethod(float eigenvalue, float[] eigenvector, int k) {
+    
+	public PowerMethod(float[][] a, float[] x, float[] y, int n) {
 		this.eigenvalue = eigenvalue;
 		this.eigenvector = eigenvector;
 		this.k = k;
