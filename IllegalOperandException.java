@@ -1,8 +1,3 @@
-/**
- * checked exception that extends Exception
- * @author Yan Chen
- * @version 1.0
- */
 public class IllegalOperandException extends Exception {
     /**
     * non-argument constructor
