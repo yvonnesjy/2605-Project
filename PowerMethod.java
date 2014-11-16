@@ -1,4 +1,5 @@
 import java.lang.Math;
+import java.util.Random;
 public class PowerMethod {
 	float[][] a;
     float[] x;
@@ -9,13 +10,39 @@ public class PowerMethod {
 
 
     public static void main(String[] args) {
-        float[][] a = {{(float)-2, (float)-3}, {(float)-1, (float)0}};
-        float[] x = {(float)1, (float)0};
-        float[] y = {(float)1, (float)0};
-        int n = 50;
+        // float[][] a = {{(float)-2, (float)-3}, {(float)-1, (float)0}};
+        // float[] x = {(float)1, (float)0};
+        // float[] y = {(float)1, (float)0};
+        // int n = 50;
 
-        PowerMethod test1 = new PowerMethod(a, x, y, n);
-        test1.eigenPower();
+        // PowerMethod test1 = new PowerMethod(a, x, y, n);
+        // test1.eigenPower();
+
+        int num = 1000; 
+		Random r = new Random();
+		for (int i = 0; i < num; i++) {
+			float a00 = r.nextFloat() * 4 - 2f;
+			float a01 = r.nextFloat() * 4 - 2f;
+			float a10 = r.nextFloat() * 4 - 2f;
+			float a11 = r.nextFloat() * 4 - 2f;
+			float[][] a = {{a00, a01}, {a10, a11}};
+			while (two_determinate(a) == 0) {					
+				a00 = r.nextFloat() * 4 - 2f;
+				a01 = r.nextFloat() * 4 - 2f;
+				a10 = r.nextFloat() * 4 - 2f;
+				a11 = r.nextFloat() * 4 - 2f;
+				a = {{a00, a01}, {a10, a11}};
+			}
+			// float[] x = {(float)1, (float)0};
+   //     	 	float[] y = {(float)1, (float)0};
+			// PowerMethod power = new PowerMethod(a, x, y, 100);
+			// float[][] b = two_inverse(a);
+			// PowerMethod inversePower = new PowerMethod(b, x, y, 100);
+   //     		power.eigenPower();
+   //     		inversePower.eigenPower();
+   //     		System.out.println("The trace of the matrix is " + trace(a));
+   //     		System.out.println("The determinant of the matrix is " + two_determinate(a));
+		}		
     }
     
 	public PowerMethod(float[][] a, float[] x, float[] y, int n) {
@@ -29,7 +56,7 @@ public class PowerMethod {
 		float[] xkMinus1 = x;
 		float[] xk = matrixVectorMultiply(a, xkMinus1);
 		float lambdaBefore = dotProduct(y, xk) / dotProduct(y, xkMinus1);
-        System.out.println(lambdaBefore);
+        // System.out.println(lambdaBefore);
 		xkMinus1 = xk;
 		xk = matrixVectorMultiply(a, xkMinus1);
 		float lambdaAfter = dotProduct(y, xk) / dotProduct(y, xkMinus1);
@@ -60,8 +87,14 @@ public class PowerMethod {
         System.out.println(k);
 	}
 
-	
 
+	public float trace(float[][] a) {
+		float sum = 0f;
+		for (int i = 0; i < a.length; i++) {
+			sum += a[i][i];
+		}
+		return sum;
+	} 
 
 	public float norm(float[] x) {
 		float sum = 0;
@@ -113,5 +146,19 @@ public class PowerMethod {
             }
         }
         return a;
+    }
+
+    public float two_determinate(float[][] input){
+        return ((input[1][1]*input[0][0])-(input[0][1]*input[1][0]));
+    }
+    public float[][] two_inverse(float[][] input){
+        float[][] newInverse = new float[2][2];
+        float invserDeter = 1/(Math.abs(two_determinate(input)));
+
+        newInverse[0][0] = invserDeter*input[1][1];
+        newInverse[0][1] = invserDeter*-input[1][0];
+        newInverse[1][0] = invserDeter*-input[0][1];
+        newInverse[1][1] = invserDeter*input[0][0];
+        return newInverse;
     }
 }
