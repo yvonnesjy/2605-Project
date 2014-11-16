@@ -1,4 +1,8 @@
 import java.util.Random;
+import javax.swing.JApplet;
+import java.awt.Color;
+import java.awt.Graphics;
+
 public class PowerMethod {
     float[][] a;
     float[] x;
@@ -6,7 +10,6 @@ public class PowerMethod {
     int n;
     private static final double E_VALUE = 0.00005f;
     //private static float lambda;
-
 
     public static void main(String[] args) {
         // float[][] a = {{(float)-2, (float)-3}, {(float)-1, (float)0}};
@@ -16,7 +19,6 @@ public class PowerMethod {
 
         // PowerMethod test1 = new PowerMethod(a, x, y, n);
         // test1.eigenPower();
-
         int num = 1000;
         Random r = new Random();
         for (int i = 0; i < num; i++) {
@@ -37,15 +39,21 @@ public class PowerMethod {
             a[1][0] = a10;
             a[1][1] = a11;
             //            a = {{a00, a01}, {a10, a11}};
+            float trace = trace(a);
+            float det = two_determinate(a);
+            System.out.println("Matrix " + (i+1));
+            System.out.println("The trace of the matrix is " + trace);
+            System.out.println("The determinant of the matrix is " + det);
             float[] x = {1, 0};
             float[] y = {1, 0};
             PowerMethod power = new PowerMethod(a, x, y, 100);
             float[][] b = two_inverse(a);
             PowerMethod inversePower = new PowerMethod(b, x, y, 100);
+            System.out.println("A:");
             power.eigenPower();
+            System.out.println("A^-1:");
             inversePower.eigenPower();
-            System.out.println("The trace of the matrix is " + trace(a));
-            System.out.println("The determinant of the matrix is " + two_determinate(a));
+            System.out.println();
         }
     }
 
@@ -76,19 +84,18 @@ public class PowerMethod {
             if (k > n) {
                 keepGoing = false;
                 System.out.println("We did not get an answer within "
-                        + n + "interations.");
+                        + n + " interations.");
                 return;
             }
         }
         xk = unitEigenvector(xk);
-        System.out.println("val " + lambdaAfter);
-        System.out.println("vec");
+        System.out.println("The eigenvalue is " + lambdaAfter);
+        System.out.print("The eigenvector is [");
         for (int i = 0; i < xk.length; i++) {
             System.out.print(xk[i] + " ");
         }
-        System.out.println();
-        System.out.println("iter ");
-        System.out.println(k);
+        System.out.println("]");
+        System.out.println("It took " + k + " iterations");
     }
 
 
