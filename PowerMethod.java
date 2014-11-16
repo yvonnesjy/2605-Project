@@ -32,11 +32,16 @@ public class PowerMethod {
 		} else {
 			while ((lambdaAfter - lambdaBefore) > E_VALUE) {
 				for (int i = 0; i < n; i++) {
-				lambdaBefore = lambdaAfter;
-				xk = matrixVectorMultiply(a, xkMinus1);
-				lambdaAfter = dotProduct(y, xk) / dotProduct(y, xkMinus1);
-				xkMinus1 = xk;
-				count++;
+					lambdaBefore = lambdaAfter;
+					xk = matrixVectorMultiply(a, xkMinus1);
+					lambdaAfter = dotProduct(y, xk) / dotProduct(y, xkMinus1);
+					xkMinus1 = xk;
+					count++;
+					if (count == n) {
+						lambdaAfter - lambdaBefore = 0;
+						System.out.println("We did not get an answer within "
+							+ n + "interations.");
+					}
 				}
 			}
 		}
