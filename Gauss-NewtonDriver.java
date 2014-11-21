@@ -8,7 +8,7 @@ public class Gauss-NewtonDriver {
         Scanner input = new Scanner();
         boolean done = false;
         while (!done) {
-            try {
+            try { 
                 System.out.println();
                 System.out.println("Choose a curve to work on: ");
                 System.out.println("0. Quadratic");
