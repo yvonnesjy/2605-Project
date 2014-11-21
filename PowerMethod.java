@@ -8,6 +8,7 @@ public class PowerMethod {
     float[] x;
     float[] y;
     int n;
+    int k;
     private static final double E_VALUE = 0.00005f;
     //private static float lambda;
 
@@ -72,7 +73,7 @@ public class PowerMethod {
         xkMinus1 = xk;
         xk = matrixVectorMultiply(a, xkMinus1);
         float lambdaAfter = dotProduct(y, xk) / dotProduct(y, xkMinus1);
-        int k = 2;
+        k = 2;
         boolean keepGoing = true;
         float b = lambdaAfter - lambdaBefore;
         while (keepGoing && Math.abs(lambdaAfter - lambdaBefore) > E_VALUE) {
@@ -96,6 +97,10 @@ public class PowerMethod {
         }
         System.out.println("]");
         System.out.println("It took " + k + " iterations");
+    }
+
+    public int getCount() {
+        return k;
     }
 
 

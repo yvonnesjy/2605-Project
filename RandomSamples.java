@@ -6,6 +6,7 @@ import java.awt.Graphics;
 public class RandomSamples extends JApplet {
     public void paint(Graphics g) {
         int num = 1000;
+        setSize(1000,1000);
         Random r = new Random();
         for (int i = 0; i < num; i++) {
             float a00 = r.nextFloat() * 4 - 2f;
@@ -40,7 +41,8 @@ public class RandomSamples extends JApplet {
             System.out.println("A^-1:");
             inversePower.eigenPower();
             System.out.println();
-            g.fillOval((int)det, (int)trace, 5, 5);
+            g.setColor(new Color(inversePower.getCount() * 1000));
+            g.fillOval((int)(det * 500), (int)(trace * 500), 5, 5);
         }
     }
 }
