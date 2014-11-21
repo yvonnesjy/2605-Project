@@ -14,12 +14,12 @@ public class GaussNewtonMethod {
     private final int numOfPoints;
 
     public static void main(String[] args) {
-        // float[] quabeta = {(float)1, (float)3, (float)-1};
-        // GaussNewtonMethod quagn = new GaussNewtonMethod("quatest.txt", quabeta, 5);
-        // float[] quaresult = quagn.gn_qua();
-        // for (int i = 0; i < 3; i++) {
-        //     System.out.print(quaresult[i] + " ");
-        // }
+        float[] quabeta = {(float)1, (float)3, (float)-1};
+        GaussNewtonMethod quagn = new GaussNewtonMethod("quatest.txt", quabeta, 5);
+        float[] quaresult = quagn.gn_qua();
+        for (int i = 0; i < 3; i++) {
+            System.out.print(quaresult[i] + " ");
+        }
         // float[] expbeta = {(float)-0.3, (float)0.3, (float)0.3};
         // GaussNewtonMethod expgn = new GaussNewtonMethod("exptest.txt", expbeta, 5);
         // float[] expresult = expgn.gn_exp();
@@ -32,12 +32,13 @@ public class GaussNewtonMethod {
         // for (int i = 0; i < 3; i++) {
         //     System.out.print(logresult[i] + " ");
         // }
-        float[] ratbeta = {(float)0.9, (float)0.2, (float)0.1};
-        GaussNewtonMethod ratgn = new GaussNewtonMethod("rattest.txt", ratbeta, 5);
-        float[] ratresult = ratgn.gn_rat();
-        for (int i = 0; i < 3; i++) {
-            System.out.print(ratresult[i] + " ");
-        }
+        // float[] ratbeta = {(float)0.9, (float)0.2, (float)0.1};
+        // GaussNewtonMethod ratgn = new GaussNewtonMethod("rattest.txt", ratbeta, 5);
+        // float[] ratresult = ratgn.gn_rat();
+        // System.out.println("Rational");
+        // for (int i = 0; i < 3; i++) {
+        //     System.out.print(ratresult[i] + " ");
+        // }
     }
 
     public GaussNewtonMethod(String path, float[] beta, int n) {
@@ -90,7 +91,7 @@ public class GaussNewtonMethod {
                 j[k][1] = - x[k];
                 j[k][2] = - 1;
             }
-            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
+            beta = vectorSubtract(beta, matrixVectorMultiply(givens(j), r));
         }
         return beta;
     }
@@ -106,7 +107,7 @@ public class GaussNewtonMethod {
                 j[k][1] = - beta[0] * x[k] * (float) Math.pow(Math.E, beta[1] * x[k]);
                 j[k][2] = - 1;
             }
-            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
+            beta = vectorSubtract(beta, matrixVectorMultiply(givens(j), r));
         }
         return beta;
     }
@@ -140,7 +141,7 @@ public class GaussNewtonMethod {
                 j[k][1] = beta[0] * x[k] / (x[k] + beta[1]) / (x[k] + beta[1]);
                 j[k][2] = - 1;
             }
-            beta = vectorSubtract(beta, matrixVectorMultiply(qr_fact_househ(j), r));
+            beta = vectorSubtract(beta, matrixVectorMultiply(givens(j), r));
         }
         return beta;
     }
@@ -268,6 +269,8 @@ public class GaussNewtonMethod {
             // If the the first entry of a is less than 0, add the length of a to the first entry
             if (a[0] < 0) {
                 a[0] += length(a);
+            } else if (a[0] > 0) {
+                a[0] -= length(a);
             }
             // Set a to a unit vector
             a = scalarMatrixMultiply(a, 1 / length(a));
@@ -302,19 +305,21 @@ public class GaussNewtonMethod {
             // Q = QH
             q = matrixMultiplication(q, h);
         }
-        // System.out.println("r");
-        //     for (int d = 0; d < r.length; d++) {
-        //         for (int b = 0; b < r[0].length; b++) {
-        //             System.out.print(-r[d][b] + " ");
-        //         }
-        //         System.out.println();
-        //     }System.out.println("q");
-        //     for (int d = 0; d < q.length; d++) {
-        //         for (int b = 0; b < q[0].length; b++) {
-        //             System.out.print(-q[d][b] + " ");
-        //         }
-        //         System.out.println();
-        //     }
+
+        System.out.println("q");
+            for (int d = 0; d < q.length; d++) {
+                for (int b = 0; b < q[0].length; b++) {
+                    System.out.print(-q[d][b] + " ");
+                }
+                System.out.println();
+            }
+        System.out.println("r");
+            for (int d = 0; d < r.length; d++) {
+                for (int b = 0; b < r[0].length; b++) {
+                    System.out.print(-r[d][b] + " ");
+                }
+                System.out.println();
+            }
 
 
         // Edit Q and R into right sizes
@@ -381,19 +386,20 @@ public class GaussNewtonMethod {
                 }
             }
         }
-        // System.out.println("q");
-        //     for (int d = 0; d < newQ.length; d++) {
-        //         for (int b = 0; b < newQ[0].length; b++) {
-        //             System.out.print(newQ[d][b] + " ");
-        //         }
-        //         System.out.println();
-        //     }System.out.println("r");
-        //     for (int d = 0; d < newA.length; d++) {
-        //         for (int b = 0; b < newA[0].length; b++) {
-        //             System.out.print(newA[d][b] + " ");
-        //         }
-        //         System.out.println();
-        //     }
+        System.out.println("q");
+            for (int d = 0; d < newQ.length; d++) {
+                for (int b = 0; b < newQ[0].length; b++) {
+                    System.out.print(newQ[d][b] + " ");
+                }
+                System.out.println();
+            }
+            System.out.println("r");
+            for (int d = 0; d < newA.length; d++) {
+                for (int b = 0; b < newA[0].length; b++) {
+                    System.out.print(newA[d][b] + " ");
+                }
+                System.out.println();
+            }
         float[][] R = new float[n][n];
         float[][] Q = new float[m][n];
         for (int i = 0; i < m; i++) {
