@@ -13,49 +13,11 @@ public class PowerMethod {
     //private static float lambda;
 
     public static void main(String[] args) {
-        // float[][] a = {{(float)-2, (float)-3}, {(float)-1, (float)0}};
-        // float[] x = {(float)1, (float)0};
-        // float[] y = {(float)1, (float)0};
-        // int n = 50;
-
-        // PowerMethod test1 = new PowerMethod(a, x, y, n);
-        // test1.eigenPower();
-        int num = 1000;
-        Random r = new Random();
-        for (int i = 0; i < num; i++) {
-            float a00 = r.nextFloat() * 4 - 2f;
-            float a01 = r.nextFloat() * 4 - 2f;
-            float a10 = r.nextFloat() * 4 - 2f;
-            float a11 = r.nextFloat() * 4 - 2f;
-            float[][] a = {{a00, a01}, {a10, a11}};
-            while (two_determinate(a) == 0) {
-                a00 = r.nextFloat() * 4 - 2f;
-                a01 = r.nextFloat() * 4 - 2f;
-                a10 = r.nextFloat() * 4 - 2f;
-                a11 = r.nextFloat() * 4 - 2f;
-                //                a = {{a00, a01}, {a10, a11}};
-            }
-            a[0][0] = a00;
-            a[0][1] = a01;
-            a[1][0] = a10;
-            a[1][1] = a11;
-            //            a = {{a00, a01}, {a10, a11}};
-            float trace = trace(a);
-            float det = two_determinate(a);
-            System.out.println("Matrix " + (i+1));
-            System.out.println("The trace of the matrix is " + trace);
-            System.out.println("The determinant of the matrix is " + det);
-            float[] x = {1, 0};
-            float[] y = {1, 0};
-            PowerMethod power = new PowerMethod(a, x, y, 100);
-            float[][] b = two_inverse(a);
-            PowerMethod inversePower = new PowerMethod(b, x, y, 100);
-            System.out.println("A:");
-            power.eigenPower();
-            System.out.println("A^-1:");
-            inversePower.eigenPower();
-            System.out.println();
-        }
+        float[][] a = {{0,-3,-6},{-7,5,-2},{-6,-6,-7}};
+        float[] x = {1,0,20};
+        float[] y = {1,9,8};
+        PowerMethod pm = new PowerMethod(a, x, y, 100);
+        pm.eigenPower();
     }
 
     public PowerMethod(float[][] a, float[] x, float[] y, int n) {
@@ -69,7 +31,6 @@ public class PowerMethod {
         float[] xkMinus1 = x;
         float[] xk = matrixVectorMultiply(a, xkMinus1);
         float lambdaBefore = dotProduct(y, xk) / dotProduct(y, xkMinus1);
-        // System.out.println(lambdaBefore);
         xkMinus1 = xk;
         xk = matrixVectorMultiply(a, xkMinus1);
         float lambdaAfter = dotProduct(y, xk) / dotProduct(y, xkMinus1);
@@ -89,9 +50,9 @@ public class PowerMethod {
                 return;
             }
         }
-        xk = unitEigenvector(xk);
+        xk = unitVector(xk);
         System.out.println("The eigenvalue is " + lambdaAfter);
-        System.out.print("The eigenvector is [");
+        System.out.print("The eigenvector is [ ");
         for (int i = 0; i < xk.length; i++) {
             System.out.print(xk[i] + " ");
         }
@@ -115,18 +76,17 @@ public class PowerMethod {
     public float norm(float[] x) {
         float sum = 0;
         for (int i = 0; i < x.length; i++) {
-            sum += x[i] * x[i];
+            sum += Math.pow(x[i],2);
         }
-        double eigenvalue = sum;
-        return (float)Math.sqrt(eigenvalue);
+        return (float)Math.sqrt(sum);
     }
 
-    public float[] unitEigenvector(float[] x) {
-        float[] unitEigenvector = new float[x.length];
+    public float[] unitVector(float[] x) {
+        float[] unitVector = new float[x.length];
         for (int i = 0; i < x.length; i++) {
-            unitEigenvector[i] = x[i] / norm(x);
+            unitVector[i] = x[i] / norm(x);
         }
-        return unitEigenvector;
+        return unitVector;
     }
 
 
