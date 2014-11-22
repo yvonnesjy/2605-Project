@@ -12,14 +12,6 @@ public class PowerMethod {
     private static final double E_VALUE = 0.00005f;
     //private static float lambda;
 
-    public static void main(String[] args) {
-        float[][] a = {{0,-3,-6},{-7,5,-2},{-6,-6,-7}};
-        float[] x = {1,0,20};
-        float[] y = {1,9,8};
-        PowerMethod pm = new PowerMethod(a, x, y, 100);
-        pm.eigenPower();
-    }
-
     public PowerMethod(float[][] a, float[] x, float[] y, int n) {
         this.a = a;
         this.x = x;
