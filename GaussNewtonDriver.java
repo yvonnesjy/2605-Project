@@ -18,7 +18,7 @@ public class GaussNewtonDriver {
                 return;
             }
             System.out.println();
-            System.out.print("Please enter the file name which contains a list of points: ");
+            System.out.print("Please enter the file name which contains a list of points (including .txt): ");
             String path = input.next();
             float[] beta = new float[3];
             System.out.print("Please enter the first coordinate of beta: ");

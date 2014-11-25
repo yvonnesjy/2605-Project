@@ -32,6 +32,8 @@ public class RandomSamples extends JApplet {
 			float trace = PowerMethod.trace(a);
 			float det = PowerMethod.two_determinate(a);
 			System.out.println("Matrix " + (i + 1));
+			System.out.println(String.format("%.2f", a[0][0]) + "  " + String.format("%.2f", a[0][1]));
+			System.out.println(String.format("%.2f", a[1][0]) + "  " + String.format("%.2f", a[1][1]));
 			System.out.println("The trace of the matrix is " + trace);
 			System.out.println("The determinant of the matrix is " + det);
 			float[] x = { 128, 446 };
